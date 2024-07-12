@@ -2,6 +2,6 @@
 
 <template>
   <main>
-    <h1>Home</h1>
+    <UserPosts />
   </main>
 </template>
