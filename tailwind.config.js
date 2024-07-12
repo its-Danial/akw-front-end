@@ -6,6 +6,13 @@ export default {
   theme: {
     extend: {
       colors: {
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))'
+        },
+
         primary: 'rgb(var(--primary))',
         'primary-inverse': 'rgb(var(--primary-inverse))',
         'primary-hover': 'rgb(var(--primary-hover))',
