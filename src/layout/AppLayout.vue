@@ -1,8 +1,8 @@
 <script setup lang="ts"></script>
 <template>
-  <div>
-    <h1>App Layout</h1>
+  <NavBar />
+  <main className="min-h-screen bg-muted/40 p-8 md:gap-8 md:p-10 md:px-16">
     <slot />
-  </div>
+  </main>
 </template>
 <style lang=""></style>
