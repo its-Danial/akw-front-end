@@ -18,6 +18,12 @@ export const useUserStore = defineStore('user', {
       this.userData.username = username
 
       this.token = '123'
+    },
+    async signOutUser() {
+      console.log('signOsignOutUserut')
+      this.userData.username = ''
+
+      this.token = ''
     }
   }
 })
