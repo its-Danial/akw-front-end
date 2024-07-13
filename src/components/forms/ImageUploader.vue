@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import type { ImageFile } from '@/types'
 import type { FileUploadSelectEvent } from 'primevue/fileupload'
-import { ref } from 'vue'
-
-const file = ref()
 
 const emit = defineEmits(['submit'])
 
