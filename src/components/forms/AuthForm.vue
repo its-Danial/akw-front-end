@@ -33,8 +33,8 @@ const submitHandler = () => {
       </template>
       <template #content>
         <div class="w-full flex flex-col space-y-4">
-          <div class="flex flex-col space-y-2">
-            <label for="username">Username</label>
+          <div class="flex flex-col space-y-1">
+            <label for="username" class="font-medium text-sm">Username</label>
             <InputGroup>
               <InputGroupAddon>
                 <i class="pi pi-user"></i>
@@ -47,19 +47,16 @@ const submitHandler = () => {
               />
             </InputGroup>
           </div>
-          <div class="flex flex-col gap-2">
-            <label for="password">Password</label>
-            <InputGroup>
-              <InputGroupAddon>
-                <i class="pi pi-key"></i>
-              </InputGroupAddon>
-              <InputText
-                id="password"
-                type="password"
-                v-model="password"
-                aria-describedby="password-help"
-              />
-            </InputGroup>
+          <div class="flex flex-col space-y-1">
+            <label for="password" class="font-medium text-sm">Password</label>
+            <Password
+              id="password"
+              type="password"
+              v-model="password"
+              toggleMask
+              :feedback="false"
+              aria-describedby="password-help"
+            />
           </div>
         </div>
       </template>
