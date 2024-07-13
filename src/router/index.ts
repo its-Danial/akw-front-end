@@ -5,6 +5,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 const LoginPage = () => import('@/pages/LoginPage.vue')
 const RegisterPage = () => import('@/pages/RegisterPage.vue')
 const AdminPage = () => import('@/pages/AdminPage.vue')
+const CreateEntryPage = () => import('@/pages/CreateEntryPage.vue')
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -13,6 +14,22 @@ export const router = createRouter({
       path: '/',
       name: 'home',
       component: HomePage,
+      meta: {
+        layout: 'AppLayout'
+      }
+    },
+    {
+      path: '/create-entry',
+      name: 'create-entry',
+      component: CreateEntryPage,
+      meta: {
+        layout: 'AppLayout'
+      }
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: AdminPage,
       meta: {
         layout: 'AppLayout'
       }
@@ -31,14 +48,6 @@ export const router = createRouter({
       component: RegisterPage,
       meta: {
         layout: 'AuthLayout'
-      }
-    },
-    {
-      path: '/admin',
-      name: 'admin',
-      component: AdminPage,
-      meta: {
-        layout: 'AppLayout'
       }
     }
   ]
