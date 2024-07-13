@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user'
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -24,7 +24,9 @@ const toggle = (event: MouseEvent) => {
   <nav
     className="sticky top-0 z-50 flex h-16 siz w-full items-center justify-between border-b bg-background/95 px-8 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:px-16"
   >
-    <img src="/src/assets/black-logo.png" class="size-12" />
+    <RouterLink :to="{ name: 'home' }">
+      <img src="/src/assets/black-logo.png" class="size-12" />
+    </RouterLink>
     <div>
       <div @click="toggle" class="flex items-center space-x-2 cursor-pointer group">
         <Avatar
