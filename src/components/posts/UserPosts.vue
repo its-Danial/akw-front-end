@@ -2,6 +2,7 @@
 import Card from 'primevue/card'
 import type { DropdownChangeEvent } from 'primevue/dropdown'
 import { ref } from 'vue'
+import { RouterLink } from 'vue-router'
 
 const products = [
   {
@@ -95,7 +96,9 @@ const onSortChange = (event: DropdownChangeEvent) => {
               @change="onSortChange($event)"
             />
             <h1 class="text-2xl font-semibold tracking-tight text-gray-400">Your Entries</h1>
-            <Button icon="pi pi-plus" label="Create New Entry" outlined />
+            <RouterLink :to="{ name: 'create-entry' }">
+              <Button icon="pi pi-plus" label="Create New Entry" outlined />
+            </RouterLink>
           </div>
         </template>
         <template #list="slotProps">
