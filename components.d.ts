@@ -7,13 +7,33 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AccessControl: typeof import('./src/components/access-control.vue')['default']
     AuthForm: typeof import('./src/components/forms/AuthForm.vue')['default']
+    Avatar: typeof import('primevue/avatar')['default']
+    Badge: typeof import('primevue/badge')['default']
     Button: typeof import('primevue/button')['default']
     Card: typeof import('primevue/card')['default']
+    Column: typeof import('primevue/column')['default']
+    DataTable: typeof import('primevue/datatable')['default']
+    DataView: typeof import('primevue/dataview')['default']
+    Dropdown: typeof import('primevue/dropdown')['default']
+    FileUpload: typeof import('primevue/fileupload')['default']
+    ImageUpload: typeof import('./src/components/forms/ImageUpload.vue')['default']
+    ImageUploader: typeof import('./src/components/forms/ImageUploader.vue')['default']
     InputGroup: typeof import('primevue/inputgroup')['default']
     InputGroupAddon: typeof import('primevue/inputgroupaddon')['default']
+    InputSwitch: typeof import('primevue/inputswitch')['default']
     InputText: typeof import('primevue/inputtext')['default']
+    Menu: typeof import('primevue/menu')['default']
+    Nav: typeof import('./src/components/nav/index.vue')['default']
+    NavBar: typeof import('./src/components/nav/NavBar.vue')['default']
+    Password: typeof import('primevue/password')['default']
+    Posts: typeof import('./src/components/posts/Posts.vue')['default']
+    ProgressBar: typeof import('primevue/progressbar')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Tag: typeof import('primevue/tag')['default']
+    Toast: typeof import('primevue/toast')['default']
+    UserPosts: typeof import('./src/components/posts/UserPosts.vue')['default']
   }
 }
