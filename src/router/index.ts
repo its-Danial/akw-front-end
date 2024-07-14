@@ -1,11 +1,30 @@
 import HomePage from '@/pages/HomePage.vue'
 import { useUserStore } from '@/stores/user'
-import { createRouter, createWebHistory } from 'vue-router'
+import {
+  createRouter,
+  createWebHistory,
+  type NavigationGuardNext,
+  type RouteLocationNormalizedGeneric,
+  type RouteLocationNormalizedLoadedGeneric
+} from 'vue-router'
 
 const LoginPage = () => import('@/pages/LoginPage.vue')
 const RegisterPage = () => import('@/pages/RegisterPage.vue')
 const AdminPage = () => import('@/pages/AdminPage.vue')
 const CreateEntryPage = () => import('@/pages/CreateEntryPage.vue')
+
+const permissionsGuard = (
+  to: RouteLocationNormalizedGeneric,
+  from: RouteLocationNormalizedLoadedGeneric,
+  next: NavigationGuardNext
+) => {
+  const { isLoggedIn, permission } = useUserStore()
+  if (isLoggedIn && !!permission.canView) {
+    return next()
+  } else {
+    next({ name: 'create-entry' })
+  }
+}
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -16,7 +35,8 @@ export const router = createRouter({
       component: HomePage,
       meta: {
         layout: 'AppLayout'
-      }
+      },
+      beforeEnter: permissionsGuard
     },
     {
       path: '/create-entry',
@@ -54,7 +74,7 @@ export const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (!['login', 'register'].includes(to.name as string) && !useUserStore().isLoggedIn)
-    next({ name: 'login' })
+  const { isLoggedIn } = useUserStore()
+  if (!['login', 'register'].includes(to.name as string) && !isLoggedIn) next({ name: 'login' })
   else next()
 })
