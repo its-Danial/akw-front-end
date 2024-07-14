@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { accessControl } from '@/services/authService'
 import { useUserStore } from '@/stores/user'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -7,14 +8,25 @@ const router = useRouter()
 
 const userStore = useUserStore()
 
-const username = ref('')
-const password = ref('')
+const email = ref('user2@email.com')
+const password = ref('pass123456')
 const loading = ref(false)
 
 const submitHandler = async () => {
-  await userStore.registerUser(username.value, password.value)
+  try {
+    loading.value = true
+    await userStore.loginUser(email.value, password.value)
 
-  router.push({ name: 'home' })
+    if (accessControl({ role: 'admin' })) {
+      router.push({ name: 'admin' })
+    } else {
+      router.push({ name: 'home' })
+    }
+  } catch (e) {
+    console.log(e)
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 <template>
@@ -23,7 +35,7 @@ const submitHandler = async () => {
     subtitle="Entre your credentials below to login to your account."
     actionLabel="Login"
     :loading
-    v-model:username="username"
+    v-model:email="email"
     v-model:password="password"
     @submit="submitHandler"
   >
