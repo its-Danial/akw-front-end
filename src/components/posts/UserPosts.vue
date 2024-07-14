@@ -1,91 +1,54 @@
 <script setup lang="ts">
+import config from '@/config'
+import { accessControl } from '@/services/authService'
+import entriesService from '@/services/entriesService'
+import type { Entry } from '@/types'
+import { formatTimeStamp } from '@/utilities/functions'
 import Card from 'primevue/card'
 import type { DropdownChangeEvent } from 'primevue/dropdown'
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 
-const products = [
-  {
-    id: '1000',
-    code: 'f230fh0g3',
-    name: 'Bamboo Watch',
-    description: 'Product Description',
-    image: 'bamboo-watch.jpg',
-    price: 65,
-    category: 'Accessories',
-    quantity: 24,
-    inventoryStatus: 'INSTOCK',
-    rating: 5
-  },
-  {
-    id: '1000',
-    code: 'f230fh0g3',
-    name: 'Bamboo Watch',
-    description: 'Product Description',
-    image: 'bamboo-watch.jpg',
-    price: 65,
-    category: 'Accessories',
-    quantity: 24,
-    inventoryStatus: 'INSTOCK',
-    rating: 5
-  },
-  {
-    id: '1000',
-    code: 'f230fh0g3',
-    name: 'Bamboo Watch',
-    description: 'Product Description',
-    image: 'bamboo-watch.jpg',
-    price: 65,
-    category: 'Accessories',
-    quantity: 24,
-    inventoryStatus: 'INSTOCK',
-    rating: 5
-  },
-  {
-    id: '1000',
-    code: 'f230fh0g3',
-    name: 'Bamboo Watch',
-    description: 'Product Description',
-    image: 'bamboo-watch.jpg',
-    price: 65,
-    category: 'Accessories',
-    quantity: 24,
-    inventoryStatus: 'INSTOCK',
-    rating: 5
-  }
-]
-const sortKey = ref()
-const sortOrder = ref()
-const sortField = ref()
-const sortOptions = ref([
-  { label: 'Newest to Oldest', value: 'new' },
-  { label: 'Oldest to Newest', value: '!new' }
-])
-const onSortChange = (event: DropdownChangeEvent) => {
-  const value = event.value.value
-  const sortValue = event.value
+defineProps<{ entries: Entry[] }>()
 
-  if (value.indexOf('!') === 0) {
-    sortOrder.value = -1
-    sortField.value = value.substring(1, value.length)
-    sortKey.value = sortValue
-  } else {
-    sortOrder.value = 1
-    sortField.value = value
-    sortKey.value = sortValue
+const emit = defineEmits(['click:delete', 'click:edit', 'change:sortOrder'])
+
+const loader = ref({ delete: false, edit: false })
+const sortKey = ref({ label: 'Newest to Oldest', value: 'desc' })
+const sortOrder = ref('desc')
+
+const sortOptions = [
+  { label: 'Newest to Oldest', value: 'desc' },
+  { label: 'Oldest to Newest', value: 'asc' }
+]
+const onSortChange = (event: DropdownChangeEvent) => {
+  const newSortOrder = event.value.value
+
+  if (newSortOrder === sortOrder.value) return
+  sortOrder.value = event.value.value
+  emit('change:sortOrder', sortOrder.value)
+}
+
+const handleDeleteClick = async (entryId: number) => {
+  loader.value.delete = true
+  try {
+    await entriesService.deleteEntry(entryId)
+    emit('click:delete', entryId)
+  } catch (error) {
+    console.log('error --->', error)
+  } finally {
+    loader.value.delete = false
   }
+}
+const handleEditClick = (entryId: number) => {
+  emit('click:edit', entryId)
 }
 </script>
 
 <template>
   <Card :pt="{ content: 'pa-0' }" class="h-full">
     <template #content>
-      <DataView
-        :value="products"
-        :pt="{ header: 'py-4 bg-transparent' }"
-        :sortOrder="sortOrder"
-        :sortField="sortField"
-      >
+      <DataView dataKey="entires" :value="entries" :pt="{ header: 'py-4 bg-transparent' }">
         <template #header>
           <div class="flex justify-between items-center">
             <Dropdown
@@ -95,7 +58,9 @@ const onSortChange = (event: DropdownChangeEvent) => {
               placeholder="Sort By Date"
               @change="onSortChange($event)"
             />
-            <h1 class="text-2xl font-semibold tracking-tight text-gray-400">Your Entries</h1>
+            <h1 class="text-2xl font-semibold tracking-tight text-gray-400">
+              {{ accessControl({ permissionKey: 'canViewAll' }) ? 'All User' : 'Your' }} Entries
+            </h1>
             <RouterLink :to="{ name: 'create-entry' }">
               <Button icon="pi pi-plus" label="Create New Entry" outlined />
             </RouterLink>
@@ -103,7 +68,7 @@ const onSortChange = (event: DropdownChangeEvent) => {
         </template>
         <template #list="slotProps">
           <div class="grid grid-nogutter">
-            <div v-for="(item, index) in slotProps.items" :key="index" class="col-12">
+            <div v-for="(item, index) in slotProps.items as Entry[]" :key="item.id" class="col-12">
               <div
                 class="flex flex-column sm:flex-row sm:items-center py-4 gap-3"
                 :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }"
@@ -111,7 +76,7 @@ const onSortChange = (event: DropdownChangeEvent) => {
                 <div class="md:w-[10rem]">
                   <img
                     class="block xl:block mx-auto rounded-md w-full"
-                    :src="`https://primefaces.org/cdn/primevue/images/product/${item.image}`"
+                    :src="`${config.api.baseUrl}/${item.imagePath}`"
                     :alt="item.name"
                   />
                 </div>
@@ -123,16 +88,43 @@ const onSortChange = (event: DropdownChangeEvent) => {
                       <div class="text-lg font-medium text-surface-700 dark:text-surface-0/80 mb-1">
                         {{ item.name }}
                       </div>
-                      <span class="font-medium text-secondary text-sm">{{ item.category }}</span>
+                      <div class="font-medium text-secondary text-xs">
+                        {{ formatTimeStamp(item.createdAt).date }}
+                      </div>
+                      <div class="font-medium text-secondary text-xs">
+                        {{ formatTimeStamp(item.createdAt).time }}
+                      </div>
                     </div>
                   </div>
                   <div class="flex flex-column md:items-end gap-5">
-                    <Button icon="pi pi-trash" outlined aria-label="delete" severity="danger" />
-                    <Button icon="pi pi-file-edit" label="Edit" />
+                    <AccessControl permissionKey="canDelete">
+                      <Button
+                        icon="pi pi-trash"
+                        outlined
+                        aria-label="delete"
+                        severity="danger"
+                        :loading="loader.delete"
+                        @click="handleDeleteClick(item.id)"
+                      />
+                    </AccessControl>
+
+                    <AccessControl permissionKey="canEdit">
+                      <Button
+                        icon="pi pi-file-edit"
+                        label="Edit"
+                        :loading="loader.edit"
+                        @click="handleEditClick(item.id)"
+                      />
+                    </AccessControl>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+        </template>
+        <template #empty>
+          <div class="min-h-[calc(100vh-364px)] flex justify-center items-center">
+            <p>No Entries Yet</p>
           </div>
         </template>
       </DataView>
