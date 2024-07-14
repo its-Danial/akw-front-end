@@ -8,8 +8,8 @@ const router = useRouter()
 
 const userStore = useUserStore()
 
-const email = ref('user2@email.com')
-const password = ref('pass123456')
+const email = ref('')
+const password = ref('')
 const loading = ref(false)
 
 const submitHandler = async () => {
