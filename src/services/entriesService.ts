@@ -5,7 +5,9 @@ export default {
     return Api().post('/entry', formData)
   },
   getEntries({ entryId, order = 'desc' }: { entryId?: string; order?: string }) {
-    return Api().get(`/entry${order ? `?order=${order}` : ''}${entryId ? `&id=${entryId}` : ''}`)
+    return Api().get(
+      `/entry${order && !entryId ? `?order=${order}` : ''}${entryId ? `?id=${entryId}` : ''}`
+    )
   },
   updateEntry(entryId: string, formData: FormData) {
     return Api().put(`/entry/${entryId}`, formData)
