@@ -6,14 +6,14 @@ const emit = defineEmits(['submit'])
 
 const errorMessage = ref('')
 
-const username = defineModel('username')
+const email = defineModel('email')
 const password = defineModel('password')
 
 const submitHandler = () => {
-  if (!username.value && !password.value) {
-    errorMessage.value = 'Please enter username and password'
-  } else if (!username.value) {
-    errorMessage.value = 'Please enter username'
+  if (!email.value && !password.value) {
+    errorMessage.value = 'Please enter email and password'
+  } else if (!email.value) {
+    errorMessage.value = 'Please enter email'
   } else if (!password.value) {
     errorMessage.value = 'Please enter password'
   } else {
@@ -34,16 +34,17 @@ const submitHandler = () => {
       <template #content>
         <div class="w-full flex flex-col space-y-4">
           <div class="flex flex-col space-y-1">
-            <label for="username" class="font-medium text-sm">Username</label>
+            <label for="email" class="font-medium text-sm">Email</label>
             <InputGroup>
               <InputGroupAddon>
                 <i class="pi pi-user"></i>
               </InputGroupAddon>
               <InputText
-                id="username"
+                id="email"
+                type="email"
                 placeholder="e.g danial"
-                v-model="username"
-                aria-describedby="username-help"
+                v-model="email"
+                aria-describedby="email-help"
               />
             </InputGroup>
           </div>
