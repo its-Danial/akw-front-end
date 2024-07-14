@@ -7,14 +7,20 @@ const router = useRouter()
 
 const userStore = useUserStore()
 
-const username = ref('')
+const email = ref('')
 const password = ref('')
 const loading = ref(false)
 
 const submitHandler = async () => {
-  await userStore.loginUser(username.value, password.value)
-
-  router.push({ name: 'home' })
+  try {
+    loading.value = true
+    await userStore.registerUser(email.value, password.value)
+    router.push({ name: 'home' })
+  } catch (e) {
+    console.log(e)
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 <template>
@@ -23,7 +29,7 @@ const submitHandler = async () => {
     subtitle="Entre your credentials below to register an account."
     actionLabel="Login"
     :loading
-    v-model:username="username"
+    v-model:email="email"
     v-model:password="password"
     @submit="submitHandler"
   >
