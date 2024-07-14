@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { accessControl } from '@/services/authService'
 import type { AccessControl } from '@/types'
-import { computed, defineProps } from 'vue'
+import { computed } from 'vue'
 
 const props = defineProps<AccessControl>()
 
