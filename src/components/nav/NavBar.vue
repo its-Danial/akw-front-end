@@ -6,14 +6,13 @@ import { RouterLink, useRouter } from 'vue-router'
 const userStore = useUserStore()
 const router = useRouter()
 
-const handleSignOut = async () => {
-  console.log('signout')
-  userStore.signOutUser()
+const handleLogout = async () => {
+  await userStore.logoutUser()
   router.push({ name: 'login' })
 }
 
 const menu = ref()
-const items = ref([{ label: 'Logout', icon: 'pi pi-sign-out', command: handleSignOut }])
+const items = ref([{ label: 'Logout', icon: 'pi pi-sign-out', command: handleLogout }])
 
 const toggle = (event: MouseEvent) => {
   menu.value.toggle(event)
