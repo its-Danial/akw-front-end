@@ -2,10 +2,24 @@
 import type { ImageFile } from '@/types'
 import type { FileUploadSelectEvent } from 'primevue/fileupload'
 
-const emit = defineEmits(['submit'])
+const emit = defineEmits(['submit', 'clearExistingImage'])
+
+defineProps({
+  existingImage: {
+    type: Object,
+    default() {
+      return { name: '', imagePath: '' }
+    }
+  }
+})
 
 const onSelectedFiles = (event: FileUploadSelectEvent) => {
   emit('submit', event.files[0])
+}
+
+const handleClearCallback = (clear: () => void) => {
+  clear()
+  emit('clearExistingImage')
 }
 </script>
 
@@ -21,12 +35,11 @@ const onSelectedFiles = (event: FileUploadSelectEvent) => {
           outlined
         />
         <Button
-          @click="clearCallback()"
+          @click="handleClearCallback(clearCallback)"
           icon="pi pi-times"
           rounded
           outlined
           severity="danger"
-          :disabled="!files || files.length === 0"
         />
       </div>
     </template>
@@ -49,7 +62,22 @@ const onSelectedFiles = (event: FileUploadSelectEvent) => {
       </div>
     </template>
     <template #empty>
-      <div class="flex items-center justify-center flex-col">
+      <div
+        v-if="existingImage?.imagePath"
+        class="m-0 px-6 flex flex-col border border-surface-300 dark:border-surface-700 items-center gap-3"
+      >
+        <div>
+          <img
+            role="presentation"
+            :alt="existingImage.name"
+            :src="existingImage.imagePath"
+            width="100"
+            height="50"
+          />
+        </div>
+        <span class="font-semibold">{{ existingImage.name }}</span>
+      </div>
+      <div v-else class="flex items-center justify-center flex-col">
         <i
           class="pi pi-cloud-upload border-2 rounded-full p-5 text-8xl text-surface-400 dark:text-surface-600 border-surface-400 dark:border-surface-600"
         />
